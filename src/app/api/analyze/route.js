@@ -11,13 +11,7 @@ export async function POST(request) {
     messages: [
       {
         role: 'user',
-        content: `Analyze the current sentiment around this topic: "${topic}". 
-        Return a JSON object with these fields:
-        - topic: the topic name
-        - sentiment: "positive", "negative", or "mixed"
-        - summary: 2-3 sentence summary of the sentiment
-        - key_themes: array of 3 key themes
-        Return only valid JSON, no markdown.`
+        content: `Analyze the current sentiment around this topic: "${topic}". Return a JSON object with these fields: topic (string), sentiment ("positive", "negative", or "mixed"), summary (2-3 sentence summary), key_themes (array of 3 strings). Return only valid JSON, no markdown.`
       }
     ]
   })
