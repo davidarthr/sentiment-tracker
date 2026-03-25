@@ -1,66 +1,65 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+'use client'
+import { useState } from 'react'
 
 export default function Home() {
+  const [topic, setTopic] = useState('')
+  const [result, setResult] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  async function analyze() {
+    setLoading(true)
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ topic })
+    })
+    const data = await res.json()
+    setResult(data)
+    setLoading(false)
+  }
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <main className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-8">
+      <h1 className="text-3xl font-bold mb-8">Sentiment Tracker</h1>
+      
+      <div className="w-full max-w-lg flex gap-3 mb-8">
+        <input
+          className="flex-1 bg-zinc-900 border border-zinc-700 rounded-lg px-4 py-3 text-white outline-none"
+          placeholder="Enter a topic..."
+          value={topic}
+          onChange={(e) => setTopic(e.target.value)}
         />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+        <button
+          onClick={analyze}
+          className="bg-white text-black px-6 py-3 rounded-lg font-semibold hover:bg-zinc-200"
+        >
+          {loading ? 'Analyzing...' : 'Analyze'}
+        </button>
+      </div>
+
+      {result && (
+        <div className="w-full max-w-lg bg-zinc-900 border border-zinc-700 rounded-lg p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-bold">{result.topic}</h2>
+            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+              result.sentiment === 'positive' ? 'bg-green-900 text-green-300' :
+              result.sentiment === 'negative' ? 'bg-red-900 text-red-300' :
+              'bg-yellow-900 text-yellow-300'
+            }`}>
+              {result.sentiment}
+            </span>
+          </div>
+          <p className="text-zinc-300 mb-4">{result.summary}</p>
+          <div>
+            <p className="text-zinc-500 text-sm mb-2">Key Themes</p>
+            <div className="flex flex-wrap gap-2">
+              {result.key_themes.map((theme, i) => (
+                <span key={i} className="bg-zinc-800 px-3 py-1 rounded-full text-sm">{theme}</span>
+              ))}
+            </div>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      )}
+    </main>
+  )
 }
