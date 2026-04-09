@@ -8,13 +8,21 @@ export default function Home() {
 
   async function analyze() {
     setLoading(true)
-    const res = await fetch('/api/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic })
-    })
-    const data = await res.json()
-    setResult(data)
+    try {
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ topic })
+      })
+      const data = await res.json()
+      if (data.error) {
+        console.error(data.error)
+      } else {
+        setResult(data)
+      }
+    } catch (e) {
+      console.error(e)
+    }
     setLoading(false)
   }
 
