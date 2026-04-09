@@ -46,28 +46,45 @@ export default function Home() {
       </div>
 
       {result && (
-        <div className="w-full max-w-lg bg-zinc-900 border border-zinc-700 rounded-lg p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold">{result.topic}</h2>
-            <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-              result.sentiment === 'positive' ? 'bg-green-900 text-green-300' :
-              result.sentiment === 'negative' ? 'bg-red-900 text-red-300' :
-              'bg-yellow-900 text-yellow-300'
-            }`}>
-              {result.sentiment}
-            </span>
-          </div>
-          <p className="text-zinc-300 mb-4">{result.summary}</p>
-          <div>
-            <p className="text-zinc-500 text-sm mb-2">Key Themes</p>
-            <div className="flex flex-wrap gap-2">
-              {result.key_themes.map((theme, i) => (
-                <span key={i} className="bg-zinc-800 px-3 py-1 rounded-full text-sm">{theme}</span>
-              ))}
-            </div>
-          </div>
-        </div>
-      )}
+  <div className="w-full max-w-lg bg-zinc-900 border border-zinc-700 rounded-lg p-6">
+    
+    <div className="flex justify-between items-center mb-4">
+      <h2 className="text-xl font-bold">{result.topic}</h2>
+      <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+        result.sentiment === 'positive' ? 'bg-green-900 text-green-300' :
+        result.sentiment === 'negative' ? 'bg-red-900 text-red-300' :
+        'bg-yellow-900 text-yellow-300'
+      }`}>
+        {result.sentiment}
+      </span>
+    </div>
+
+    {result.emotional_pattern && (
+      <div className="flex flex-wrap gap-2 mb-5">
+        <span className="bg-zinc-800 border border-zinc-700 px-3 py-1 rounded-full text-xs text-zinc-400">
+          {result.emotional_pattern}
+        </span>
+        {result.secondary_mode && (
+          <span className="bg-zinc-800 border border-zinc-700 px-3 py-1 rounded-full text-xs text-zinc-500">
+            + {result.secondary_mode}
+          </span>
+        )}
+      </div>
+    )}
+
+    <p className="text-zinc-300 mb-6 leading-relaxed">{result.summary}</p>
+
+    <div className="mb-4">
+      <div className="flex flex-wrap gap-2">
+        {result.key_themes.map((theme, i) => (
+          <span key={i} className="bg-zinc-800 px-3 py-1 rounded-full text-sm text-zinc-400">{theme}</span>
+        ))}
+      </div>
+    </div>
+
+    <p className="text-zinc-600 text-xs mt-4">{result.post_count} posts analyzed</p>
+  </div>
+)}
     </main>
   )
 }
